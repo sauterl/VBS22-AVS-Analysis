@@ -45,5 +45,5 @@ for t in tasks
   end
 end
 
-CSV.write("avssubmissions.csv", vcat(submissionsDF...));
-CSV.write("avstasks.csv",vcat(tasksDF...));
+CSV.write("../../data/avs-submissions.csv", vcat(submissionsDF...));
+CSV.write("../../data/avs-tasks.csv",vcat(tasksDF...));
