@@ -12,4 +12,4 @@ The primary data source is the [DRES](https://github.com/dres-dev/DRES) export o
 ## Contributors
 
 - Loris Sauter <loris.sauter@unibas.ch>
-- Florian Spieee <florian.spiess@unibas.ch>
+- Florian Spiess <florian.spiess@unibas.ch>
