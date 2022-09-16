@@ -24,10 +24,11 @@ df[!,:task] = categorical(df[!,:task])
 df[!,:team] = categorical(df[!,:team])
 
 
-colors= ColorSchemes.cork.colors;
+
 fig = Figure();
 labels = replace.(levels(df.task), "vbs22-avs-" => "a"); # label. replacing "vbs22-avs-" in each label with "a", consistent with VBS'21 paper
 teams = levels(df.team);
+colors= get(ColorSchemes.cork, collect(0:1/(length(teams)-1):1)); # sampling color scheme. values must be between 0 and 1, hence the division
 ax = Axis(fig[1,1],
           xticks = ( # x ticks
           1:length(levels(df.task)), # numerical version of xticks, basically indices for label (next argument)
@@ -40,12 +41,11 @@ barplot!(ax,
       df.task.refs, # the X avlues, must be numerical, hence the refs. multiple equal X values result in stacks
       df.ratio, # the Y values, must be numerical
       stack=df.team.refs, # numerical value of stack ordering
-      color=df.team.refs, # numerical colour value within the theme (we use the same values as for the stacking)
-      colormap=:cork, # using the label of the colour map chosen above
-      #bar_labels=df.team # apparently, categorical array works here, basically all the labels for all the bars (remember, they get stacked)
+      color=colors[df.team.refs], # numerical colour value within the theme (we use the same values as for the stacking)
+      bar_labels=df.team # apparently, categorical array works here, basically all the labels for all the bars (remember, they get stacked)
       );
 
-elements = [PolyElement(markercolor = colors[i], linecolor=colors[i],polycolor=colors[i]) for i in unique(df.team.refs)];
+elements = [PolyElement(markercolor = i, linecolor=i,polycolor=i) for i in colors[1:length(teams)]]; # same sampling as for color def.
 Legend(fig[1,2], elements, teams, "Teams");
       
 save("../../plots/avs-team-ratios-total.pdf", fig);
