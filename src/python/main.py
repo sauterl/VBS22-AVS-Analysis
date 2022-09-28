@@ -4,8 +4,7 @@ from load import load_judgement
 from matplotlib import pyplot as plt
 from time import strftime
 from time import gmtime
-import math
-import matplotlib.dates as md
+NOT_FOUND_TIME = 1e10
 
 
 def get_task_team_submission(unique=False, correct=False, sort_by_time=False):
@@ -112,15 +111,23 @@ def number_of_submissions(unique=False, correct=False):
             _times = task_team_timestamp[_task_id][_team_id]["time"]
             if not _times:
                 continue
-            time_1st = _times[0] if len(_times) >= 1 else 1e5
-            time_10th = _times[9] if len(_times) >= 10 else 1e5
+            time_1st = _times[0] if len(_times) >= 1 else NOT_FOUND_TIME
+            time_10th = _times[9] if len(_times) >= 10 else NOT_FOUND_TIME
             _time_to_1.append(time_1st)
             _time_to_10.append(time_10th)
 
+        def __time_by_half_teams__(timestamps, team_num):
+            # TODO: return the longest time if less than 50% of teams submit (correct) results
+            timestamps_sorted = sorted(timestamps)
+            time = timestamps_sorted[team_num // 2]
+            if time == NOT_FOUND_TIME:
+                time = max([i for i in timestamps_sorted if i != NOT_FOUND_TIME])
+            return time
+
         num_of_teams = len(task_team_timestamp[_task_id])
         task_info[_task_id]["time_to_1"] = min(_time_to_1)
-        task_info[_task_id]["time_to_1_by_50%"] = sorted(_time_to_1)[num_of_teams//2]
-        task_info[_task_id]["time_to_10_by_50%"] = sorted(_time_to_10)[num_of_teams//2]
+        task_info[_task_id]["time_to_1_by_50%"] = __time_by_half_teams__(_time_to_1, num_of_teams)
+        task_info[_task_id]["time_to_10_by_50%"] = __time_by_half_teams__(_time_to_10, num_of_teams)
 
     # collect data
     task_ids = list(task_info.keys())
@@ -132,7 +139,7 @@ def number_of_submissions(unique=False, correct=False):
     # plot bar chart
     fig, ax_bar = plt.subplots()
     x_ticks = [f"a{int(_task_id[-2:])}" for _task_id in task_ids]
-    ax_bar.bar(x_ticks, submission_nums)
+    ax_bar.bar(x_ticks, submission_nums, color="pink")
     ax_bar.set_xlabel("Task")
     ax_bar.set_ylabel("Number of submissions")
 
@@ -141,12 +148,13 @@ def number_of_submissions(unique=False, correct=False):
     ax_scatter = ax_bar.twinx()
     ax_scatter.set_ylabel('time')
     correct_tag = "correct " if correct else ""
-    print(time_to_1)
-    print(time_to_1_by_50p)
-    print(time_to_10_by_50p)
-    ax_scatter.scatter(x_pos, time_to_1, marker="^", color="blue", label=f"Time until first {correct_tag}submission")
-    ax_scatter.scatter(x_pos, time_to_1_by_50p, marker="d", color="red", label=f"Time to first {correct_tag}by 50% of teams")
-    ax_scatter.scatter(x_pos, time_to_10_by_50p, marker="^", color="yellow", label=f"Time to 10 {correct_tag}by 50% of teams")
+    print("x_ticks", x_ticks)
+    print("time_to_1", time_to_1)
+    print("time_to_1_by_50p", time_to_1_by_50p)
+    print("time_to_10_by_50p", time_to_10_by_50p)
+    ax_scatter.scatter(x_pos, time_to_1, marker="v", color="turquoise", label=f"Time until first {correct_tag}submission")
+    ax_scatter.scatter(x_pos, time_to_1_by_50p, marker="d", color="silver", label=f"Time to first {correct_tag}by 50% of teams")
+    ax_scatter.scatter(x_pos, time_to_10_by_50p, marker="^", color="cornflowerblue", label=f"Time to 10 {correct_tag}by 50% of teams")
     ax_scatter.invert_yaxis()
     # ax_scatter.yaxis.set_major_formatter(strftime("%M:%S"))
 
@@ -163,4 +171,4 @@ def number_of_submissions(unique=False, correct=False):
 if __name__ == "__main__":
     print("Hello world")
     # accumulative_correct_submission(unique=False)
-    number_of_submissions(unique=False, correct=False)
+    number_of_submissions(unique=True, correct=True)
