@@ -13,3 +13,4 @@ The primary data source is the [DRES](https://github.com/dres-dev/DRES) export o
 
 - Loris Sauter <loris.sauter@unibas.ch>
 - Florian Spiess <florian.spiess@unibas.ch>
+- MA Zhixin <zhixinma97@gmail.com>
