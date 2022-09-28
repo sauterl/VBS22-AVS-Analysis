@@ -127,7 +127,7 @@ def number_of_submissions(unique=False, correct=False):
     submission_nums = [task_info[_task_id]["submission_num"] for _task_id in task_ids]
     time_to_1 = [task_info[_task_id]["time_to_1"] // 1000 for _task_id in task_ids]
     time_to_1_by_50p = [task_info[_task_id]["time_to_1_by_50%"] // 1000 for _task_id in task_ids]
-    time_to_10_by_50p = [task_info[_task_id]["time_to_1_by_50%"] // 1000 for _task_id in task_ids]
+    time_to_10_by_50p = [task_info[_task_id]["time_to_10_by_50%"] // 1000 for _task_id in task_ids]
 
     # plot bar chart
     fig, ax_bar = plt.subplots()
@@ -162,5 +162,5 @@ def number_of_submissions(unique=False, correct=False):
 
 if __name__ == "__main__":
     print("Hello world")
-    accumulative_correct_submission(unique=False)
-    # number_of_submissions(unique=True, correct=True)
+    # accumulative_correct_submission(unique=False)
+    number_of_submissions(unique=False, correct=False)
