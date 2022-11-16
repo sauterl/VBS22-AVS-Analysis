@@ -1,5 +1,5 @@
 using CSV, DataFrames, CairoMakie, CategoricalArrays;
-using ColorSchemes, ColorBrewer
+using ColorSchemes, ColorBrewer;
 
 subs = DataFrame(CSV.File("../../data/avs-submissions.csv"));
 csubs = filter(:status => s -> s == "CORRECT", subs);
