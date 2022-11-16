@@ -23,5 +23,5 @@ def load_judgement():
 def load_submission():
     submission_path = os.path.join(data_root, "avs-submissions.csv")
     with open(submission_path, "r") as f:
-        f.readlines()
-    return 0
+        submission = pd.read_csv(f)
+    return submission
