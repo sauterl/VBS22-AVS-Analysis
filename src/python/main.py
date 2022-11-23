@@ -61,10 +61,6 @@ def get_task_team_submission(correct=False, sort_by_time=False):
     return team_submission_timestamp
 
 
-def filter_repetitive_submission():
-    return 
-
-
 def test_repetitive_judgements():
     ju = load_judgement()
 
@@ -132,7 +128,7 @@ def plot_submission_video_dist():
     ax_bar.set_ylabel("Number of submissions")
     ax_bar.set_xlabel("Video Range")
 
-    fig_name = f"../../plots/submission_video_distribution.png"
+    fig_name = f"../../plots/submission_video_distribution.pdf"
     plt.savefig(fig_name, bbox_inches='tight')
     print("Saved:", fig_name)
 
@@ -149,7 +145,7 @@ def plot_submission_duration():
     ax_bar.hist(clip_durations)
     ax_bar.set_ylabel("Number of submissions")
     ax_bar.set_xlabel("Clip duration")
-    fig_name = f"../../plots/submission_duration_distribution.png"
+    fig_name = f"../../plots/submission_duration_distribution.pdf"
     plt.savefig(fig_name)
     print("Saved:", fig_name)
 
@@ -211,7 +207,7 @@ def plot_number_of_submissions_overtime(unique=False, accumulative=True, correct
     plt.legend(bbox_to_anchor=(1, 0.5), loc="center left")
     unique_tag = "unique_" if unique else ""
     accumulative_tag = "accumulative_" if accumulative else ""
-    fig_name = f"../../plots/{accumulative_tag}correct_{unique_tag}submission.png"
+    fig_name = f"../../plots/avs_{accumulative_tag}correct_{unique_tag}submission.pdf"
     plt.savefig(fig_name, bbox_inches='tight')
     print("Saved:", fig_name)
     plt.clf()
@@ -300,7 +296,7 @@ def plot_number_of_submissions(unique=False, correct=False):
     plt.legend(bbox_to_anchor=(0, -0.35), loc="lower left")
     correct_tag = "correct_" if correct else ""
     unique_tag = "unique_" if unique else ""
-    fig_name = f"../../plots/num_and_time_of_{correct_tag}{unique_tag}submission.png"
+    fig_name = f"../../plots/avs_num_and_time_of_{correct_tag}{unique_tag}submission.pdf"
     plt.savefig(fig_name, bbox_inches='tight')
     print("Saved:", fig_name)
     plt.clf()
@@ -375,7 +371,7 @@ if __name__ == "__main__":
         plot_number_of_submissions(unique=_unique, correct=True)  # correct
 
     tab_number_of_correct_submission()
-    
+
     # plot_submission_video_dist()
     # plot_submission_duration()
     # test_repetitive_judgements()
