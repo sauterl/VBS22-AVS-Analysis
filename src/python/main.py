@@ -206,8 +206,9 @@ def plot_number_of_submissions_overtime(unique=False, accumulative=True, correct
         plt.yscale('log')
     plt.legend(bbox_to_anchor=(1, 0.5), loc="center left")
     unique_tag = "unique_" if unique else ""
+    correct_tag = "correct_" if correct else ""
     accumulative_tag = "accumulative_" if accumulative else ""
-    fig_name = f"../../plots/avs_{accumulative_tag}correct_{unique_tag}submission.pdf"
+    fig_name = f"../../plots/avs_{accumulative_tag}{correct_tag}{unique_tag}submission.pdf"
     plt.savefig(fig_name, bbox_inches='tight')
     print("Saved:", fig_name)
     plt.clf()
