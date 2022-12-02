@@ -1,5 +1,5 @@
 --- Counts for each team/task/item combination the number of incorrect AVS submissions before the first correct one
-SELECT task, avg(errors)
+SELECT task, avg(errors) AS average, max(errors) AS maximum
 FROM (SELECT s.team, s.task, s.item, count(*) AS errors
       FROM submission s
                LEFT OUTER JOIN
