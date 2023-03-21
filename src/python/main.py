@@ -9,7 +9,7 @@ from utils import bar_plot
 from clip import CLIP
 NOT_FOUND_TIME = 1e10
 TEAM_NUMBER = 10
-FILE_TYPE = ".pdf"  # .png or .pdf
+FILE_TYPE = ".png"  # .png or .pdf
 PREFIX = ""  # "s" or ""
 
 
