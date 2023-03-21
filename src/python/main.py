@@ -9,20 +9,22 @@ from utils import bar_plot
 from clip import CLIP
 NOT_FOUND_TIME = 1e10
 TEAM_NUMBER = 10
+FILE_TYPE = ".pdf"  # .png or .pdf
+PREFIX = ""  # "s" or ""
 
 
 def get_task_team_submission(correct=False, sort_by_time=False):
     sub = load_submission()
-    team_ids = set(sub["team"].values.tolist())
-    task_ids = sorted(set(sub["task"].values.tolist()))
+    team_ids = set(sub[f"{PREFIX}team"].values.tolist())
+    task_ids = sorted(set(sub[f"{PREFIX}task"].values.tolist()))
     team_submission_timestamp = {task_id: {team_id: {"clip": [], "time": [], "status": []} for team_id in team_ids} for task_id in task_ids}
 
     for index, row in sub.iterrows():
-        _status = row["status"]
+        _status = row[f"{PREFIX}status"]
         if correct and _status != "CORRECT":
             continue
-        _task_id, _team_id, _time = row["task"], row["team"], row["time"]
-        _clip_id = (row["item"], row["start"]//1000, row["ending"]//1000)  # id of a unique clip
+        _task_id, _team_id, _time = row[f"{PREFIX}task"], row[f"{PREFIX}team"], row[f"{PREFIX}time"]
+        _clip_id = (row[f"{PREFIX}item"], row[f"{PREFIX}start"]//1000, row[f"{PREFIX}ending"]//1000)  # id of a unique clip
         team_submission_timestamp[_task_id][_team_id]["clip"].append(_clip_id)
         team_submission_timestamp[_task_id][_team_id]["time"].append(_time)
         team_submission_timestamp[_task_id][_team_id]["status"].append(_status)
@@ -108,10 +110,10 @@ def plot_submission_video_dist():
     team_video_ids = {_team_id: [] for _team_id in teams}
 
     for index, row in sub.iterrows():
-        _team_id = row["team"]
+        _team_id = row[f"{PREFIX}team"]
         if _team_id not in teams:
             continue
-        _video_id = row["item"]
+        _video_id = row[f"{PREFIX}item"]
         team_video_ids[_team_id].append(_video_id)
 
     team_submission_dist = {}
@@ -128,7 +130,7 @@ def plot_submission_video_dist():
     ax_bar.set_ylabel("Number of submissions")
     ax_bar.set_xlabel("Video Range")
 
-    fig_name = f"../../plots/submission_video_distribution.pdf"
+    fig_name = f"../../plots/submission_video_distribution{FILE_TYPE}"
     plt.savefig(fig_name, bbox_inches='tight')
     print("Saved:", fig_name)
 
@@ -138,14 +140,14 @@ def plot_submission_duration():
 
     clip_durations = []
     for index, row in sub.iterrows():
-        du = row["ending"] - row["start"]
+        du = row[f"{PREFIX}ending"] - row[f"{PREFIX}start"]
         clip_durations.append((du+500)//1000)
 
     fig, ax_bar = plt.subplots()
     ax_bar.hist(clip_durations)
     ax_bar.set_ylabel("Number of submissions")
     ax_bar.set_xlabel("Clip duration")
-    fig_name = f"../../plots/submission_duration_distribution.pdf"
+    fig_name = f"../../plots/submission_duration_distribution{FILE_TYPE}"
     plt.savefig(fig_name)
     print("Saved:", fig_name)
 
@@ -169,7 +171,7 @@ def plot_number_of_submissions_overtime(unique=False, accumulative=True, correct
         time_stamps = []
         unique_clips = []  # task-level unique clip id
         c_skipped = 0
-        for _team_id in task_team_correct_timestamp[_task_id]:
+        for _team_id in sorted(task_team_correct_timestamp[_task_id]):
             if unique:  # filter the repeated submissions
                 _clips = task_team_correct_timestamp[_task_id][_team_id]["clip"]
                 _times = task_team_correct_timestamp[_task_id][_team_id]["time"]
@@ -208,7 +210,7 @@ def plot_number_of_submissions_overtime(unique=False, accumulative=True, correct
     unique_tag = "unique_" if unique else ""
     correct_tag = "correct_" if correct else ""
     accumulative_tag = "accumulative_" if accumulative else ""
-    fig_name = f"../../plots/avs_{accumulative_tag}{correct_tag}{unique_tag}submission.pdf"
+    fig_name = f"../../plots/avs_{accumulative_tag}{correct_tag}{unique_tag}submission{FILE_TYPE}"
     plt.savefig(fig_name, bbox_inches='tight')
     print("Saved:", fig_name)
     plt.clf()
@@ -238,7 +240,7 @@ def plot_number_of_submissions(unique=False, correct=False):
     for _task_id in task_team_timestamp:
         _time_to_1, _time_to_10 = [], []
         _clips_unique = []
-        for _team_id in task_team_timestamp[_task_id]:
+        for _team_id in sorted(task_team_timestamp[_task_id]):
             if unique:
                 _times_with_repeat = task_team_timestamp[_task_id][_team_id]["time"]
                 _clips_with_repeat = task_team_timestamp[_task_id][_team_id]["clip"]
@@ -297,13 +299,13 @@ def plot_number_of_submissions(unique=False, correct=False):
     plt.legend(bbox_to_anchor=(0, -0.35), loc="lower left")
     correct_tag = "correct_" if correct else ""
     unique_tag = "unique_" if unique else ""
-    fig_name = f"../../plots/avs_num_and_time_of_{correct_tag}{unique_tag}submission.pdf"
+    fig_name = f"../../plots/avs_num_and_time_of_{correct_tag}{unique_tag}submission{FILE_TYPE}"
     plt.savefig(fig_name, bbox_inches='tight')
     print("Saved:", fig_name)
     plt.clf()
 
 
-# Table
+# Agreement Table
 def tab_number_of_correct_submission():
     # Number of teams in agreement/disagreement with judges
     task_team_timestamp = get_task_team_submission(sort_by_time=False)
